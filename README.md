@@ -10,26 +10,42 @@ npm install openmodels
 
 ## Quick Start
 
+### Getting an API Key
+
+First, you need to get an API key by signing up at [tryscout.dev](https://tryscout.dev). You'll receive your API key via email with 1000 free credits ($10 value).
+
 ### Text Generation
 
 ```typescript
 import { client } from 'openmodels';
 
+// API key is required - will throw error if missing
 const openmodels = client({
-  baseUrl: 'https://your-modal-app.modal.run', // Your deployed Modal URL
+  baseUrl: 'https://tryscout.dev', // TryScout hosted service
+  apiKey: 'om_your_api_key_here'   // Required!
 });
 
-const response = await openmodels.chat({
-  model: 'microsoft/DialoGPT-medium',
-  messages: [
-    { role: 'system', content: 'You are a helpful assistant.' },
-    { role: 'user', content: 'Explain quantum computing in simple terms.' }
-  ],
-  max_tokens: 200,
-  temperature: 0.7
-});
+try {
+  const response = await openmodels.chat({
+    model: 'microsoft/DialoGPT-medium',
+    messages: [
+      { role: 'system', content: 'You are a helpful assistant.' },
+      { role: 'user', content: 'Explain quantum computing in simple terms.' }
+    ],
+    max_tokens: 200,
+    temperature: 0.7
+  });
 
-console.log(response.choices[0].message.content);
+  console.log(response.choices[0].message.content);
+} catch (error) {
+  if (error.message.includes('API key is required')) {
+    console.error('Please provide a valid API key');
+  } else if (error.message.includes('Invalid API key')) {
+    console.error('API key is invalid or expired');
+  } else if (error.message.includes('Insufficient credits')) {
+    console.error('Not enough credits remaining');
+  }
+}
 ```
 
 ### Streaming Text Generation
@@ -38,7 +54,8 @@ console.log(response.choices[0].message.content);
 import { client } from 'openmodels';
 
 const openmodels = client({
-  baseUrl: 'https://your-modal-app.modal.run',
+  baseUrl: 'https://tryscout.dev',
+  apiKey: 'om_your_api_key_here' // Required!
 });
 
 const stream = await openmodels.chat({

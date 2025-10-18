@@ -16,31 +16,21 @@ export class OpenModels {
   private imageProvider: ModalProvider;
 
   constructor(config: OpenModelsConfig = {}) {
-    // Validate that API key is provided
-    if (!config.apiKey) {
-      throw new OpenModelsError('API key is required. Please provide an API key in the client configuration.');
-    }
-
-    // Validate API key format
-    if (!config.apiKey.startsWith('om_') || config.apiKey.length < 10) {
-      throw new OpenModelsError('Invalid API key format. API keys must start with "om_" and be at least 10 characters long.');
-    }
-
     // Determine base URLs for each service
     const baseUrl = config.baseUrl || 'https://tryscout.dev';
     
-    // If baseUrl contains modal.run or is a full URL, use as-is
-    // Otherwise, assume it's a base domain and add subfolders
+    // If baseUrl contains a subdomain or is a full Modal URL, use as-is
+    // Otherwise, assume it's a base domain and add subdomains
     const getServiceUrl = (service: string) => {
-      if (baseUrl.includes('modal.run') || baseUrl.includes('/api/')) {
-        // If it's already a full URL or contains subfolder, use as-is
+      if (baseUrl.includes('modal.run') || baseUrl.includes('tryscout.dev')) {
+        // If it's already a full URL or contains subdomain, use as-is
         return baseUrl;
       } else if (baseUrl.includes('.')) {
-        // If it's a domain, add subfolder
-        return `${baseUrl}/api/${service}`;
+        // If it's a domain, add subdomain
+        return `https://${service}.${baseUrl.replace('https://', '')}`;
       } else {
-        // Default to tryscout.dev subfolders
-        return `https://tryscout.dev/api/${service}`;
+        // Default to tryscout.dev subdomains
+        return `https://${service}.tryscout.dev`;
       }
     };
 
@@ -108,4 +98,3 @@ export class OpenModels {
 export function client(config?: OpenModelsConfig): OpenModels {
   return new OpenModels(config);
 }
-

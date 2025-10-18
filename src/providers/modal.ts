@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import { BaseProvider } from './base';
 import { ChatCompletionRequest, EmbeddingRequest, ImageRequest } from '../types';
+import { OpenModelsError } from '../streaming';
 
 export class ModalProvider extends BaseProvider {
   async chat(request: ChatCompletionRequest): Promise<any> {
@@ -8,11 +9,8 @@ export class ModalProvider extends BaseProvider {
     
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.config.apiKey}`,
     };
-    
-    if (this.config.apiKey) {
-      headers['Authorization'] = `Bearer ${this.config.apiKey}`;
-    }
 
     const response = await fetch(url, {
       method: 'POST',
@@ -22,7 +20,15 @@ export class ModalProvider extends BaseProvider {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Modal API error: ${response.status} ${errorText}`);
+      
+      if (response.status === 401) {
+        throw new OpenModelsError('Invalid API key. Please check your credentials.', 401);
+      }
+      if (response.status === 403) {
+        throw new OpenModelsError('Insufficient credits. Please top up your account.', 403);
+      }
+      
+      throw new OpenModelsError(`Modal API error: ${response.status} ${errorText}`, response.status);
     }
 
     return response;
@@ -33,11 +39,8 @@ export class ModalProvider extends BaseProvider {
     
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.config.apiKey}`,
     };
-    
-    if (this.config.apiKey) {
-      headers['Authorization'] = `Bearer ${this.config.apiKey}`;
-    }
 
     const response = await fetch(url, {
       method: 'POST',
@@ -47,7 +50,15 @@ export class ModalProvider extends BaseProvider {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Modal API error: ${response.status} ${errorText}`);
+      
+      if (response.status === 401) {
+        throw new OpenModelsError('Invalid API key. Please check your credentials.', 401);
+      }
+      if (response.status === 403) {
+        throw new OpenModelsError('Insufficient credits. Please top up your account.', 403);
+      }
+      
+      throw new OpenModelsError(`Modal API error: ${response.status} ${errorText}`, response.status);
     }
 
     return response;
@@ -58,11 +69,8 @@ export class ModalProvider extends BaseProvider {
     
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.config.apiKey}`,
     };
-    
-    if (this.config.apiKey) {
-      headers['Authorization'] = `Bearer ${this.config.apiKey}`;
-    }
 
     const response = await fetch(url, {
       method: 'POST',
@@ -72,7 +80,15 @@ export class ModalProvider extends BaseProvider {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Modal API error: ${response.status} ${errorText}`);
+      
+      if (response.status === 401) {
+        throw new OpenModelsError('Invalid API key. Please check your credentials.', 401);
+      }
+      if (response.status === 403) {
+        throw new OpenModelsError('Insufficient credits. Please top up your account.', 403);
+      }
+      
+      throw new OpenModelsError(`Modal API error: ${response.status} ${errorText}`, response.status);
     }
 
     return response;

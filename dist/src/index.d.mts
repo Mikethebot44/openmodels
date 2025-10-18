@@ -91,7 +91,9 @@ interface ImageGenerationOptions {
 }
 
 declare class OpenModels {
-    private provider;
+    private textProvider;
+    private embedProvider;
+    private imageProvider;
     constructor(config?: OpenModelsConfig);
     chat(request: ChatCompletionRequest): Promise<ChatCompletionResponse | AsyncGenerator<string, void, unknown>>;
     embed(request: EmbeddingRequest): Promise<EmbeddingResponse>;

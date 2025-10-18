@@ -18,6 +18,14 @@ export async function* parseSSEStream(
     throw new OpenModelsError('Response body is null');
   }
 
+  // Handle authentication errors before parsing stream
+  if (response.status === 401) {
+    throw new OpenModelsError('Invalid API key. Please check your credentials.', 401);
+  }
+  if (response.status === 403) {
+    throw new OpenModelsError('Insufficient credits. Please top up your account.', 403);
+  }
+
   // Handle node-fetch response
   const text = await response.text();
   const lines = text.split('\n');

@@ -1,8 +1,15 @@
 import { client } from '../src';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config({ path: '.env.local' });
 
 async function basicChat() {
+  const apiKey = process.env.OPENMODELS_API_KEY;
+
   const openmodels = client({
-    baseUrl: 'https://mikethebot44--openmodels-text-inference-create-app.modal.run',
+    baseUrl: 'https://tryscout.dev',
+    apiKey: apiKey,
   });
 
   try {
