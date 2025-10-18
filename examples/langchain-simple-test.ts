@@ -1,0 +1,44 @@
+import { OpenModelsLLM } from '../integrations/langchain';
+
+async function langchainExample() {
+  console.log('Testing OpenModels LangChain Integration...\n');
+
+  // Initialize OpenModels LLM
+  const llm = new OpenModelsLLM(
+    {
+      baseUrl: 'https://mikethebot44--openmodels-text-inference-create-app.modal.run',
+    },
+    {
+      model: 'microsoft/DialoGPT-medium',
+      temperature: 0.7,
+      maxTokens: 150
+    }
+  );
+
+  try {
+    // Test basic LLM call
+    console.log('Testing basic LLM call...');
+    const response = await llm.invoke('Hello! How are you today?');
+    console.log('Response:', response);
+    console.log();
+
+    // Test with different prompt
+    console.log('Testing with different prompt...');
+    const response2 = await llm.invoke('What is the capital of France?');
+    console.log('Response:', response2);
+    console.log();
+
+    // Test LLM type
+    console.log('LLM Type:', llm._llmType());
+    
+    // Test identifying parameters
+    console.log('Identifying Parameters:', llm._identifyingParams());
+
+    console.log('\n✅ LangChain integration test completed successfully!');
+
+  } catch (error) {
+    console.error('❌ Error testing LangChain integration:', error);
+  }
+}
+
+langchainExample();

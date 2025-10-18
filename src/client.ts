@@ -3,7 +3,11 @@ import { parseSSEStream, OpenModelsError } from './streaming';
 import { 
   OpenModelsConfig, 
   ChatCompletionRequest, 
-  ChatCompletionResponse 
+  ChatCompletionResponse,
+  EmbeddingRequest,
+  EmbeddingResponse,
+  ImageRequest,
+  ImageResponse
 } from './types';
 
 export class OpenModels {
@@ -26,6 +30,32 @@ export class OpenModels {
       
       const data = await response.json();
       return data as ChatCompletionResponse;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new OpenModelsError(error.message);
+      }
+      throw new OpenModelsError('Unknown error occurred');
+    }
+  }
+
+  async embed(request: EmbeddingRequest): Promise<EmbeddingResponse> {
+    try {
+      const response = await this.provider.embed(request);
+      const data = await response.json();
+      return data as EmbeddingResponse;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new OpenModelsError(error.message);
+      }
+      throw new OpenModelsError('Unknown error occurred');
+    }
+  }
+
+  async image(request: ImageRequest): Promise<ImageResponse> {
+    try {
+      const response = await this.provider.image(request);
+      const data = await response.json();
+      return data as ImageResponse;
     } catch (error) {
       if (error instanceof Error) {
         throw new OpenModelsError(error.message);
