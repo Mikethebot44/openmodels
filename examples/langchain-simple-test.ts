@@ -9,9 +9,9 @@ async function langchainExample() {
       baseUrl: 'https://mikethebot44--openmodels-text-inference-create-app.modal.run',
     },
     {
-      model: 'microsoft/DialoGPT-medium',
-      temperature: 0.7,
-      maxTokens: 150
+      model: 'EleutherAI/gpt-neo-2.7B',
+      temperature: 0.3,
+      maxTokens: 200
     }
   );
 

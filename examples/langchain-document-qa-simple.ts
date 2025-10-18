@@ -10,7 +10,7 @@ async function documentQATest() {
       baseUrl: 'https://mikethebot44--openmodels-text-inference-create-app.modal.run',
     },
     {
-      model: 'microsoft/DialoGPT-medium',
+      model: 'meta-llama/Llama-3-8b',
       temperature: 0.3,
       maxTokens: 200
     }

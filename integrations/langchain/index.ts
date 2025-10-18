@@ -6,6 +6,7 @@ export interface OpenModelsLLMParameters {
   temperature?: number;
   maxTokens?: number;
   streaming?: boolean;
+  systemPrompt?: string; // New: Optional system prompt
 }
 
 export class OpenModelsLLM extends LLM {
@@ -14,6 +15,7 @@ export class OpenModelsLLM extends LLM {
   private temperature: number;
   private maxTokens: number;
   private streaming: boolean;
+  private systemPrompt: string; // New: Store system prompt
 
   constructor(
     config: OpenModelsConfig,
@@ -26,6 +28,7 @@ export class OpenModelsLLM extends LLM {
     this.temperature = parameters.temperature ?? 0.7;
     this.maxTokens = parameters.maxTokens ?? 200;
     this.streaming = parameters.streaming ?? false;
+    this.systemPrompt = parameters.systemPrompt ?? ''; // New: Store system prompt
   }
 
   _llmType(): string {
@@ -38,11 +41,18 @@ export class OpenModelsLLM extends LLM {
     runManager?: any
   ): Promise<string> {
     try {
+      // Build messages array with optional system prompt
+      const messages: Array<{ role: string; content: string }> = [];
+      
+      if (this.systemPrompt) {
+        messages.push({ role: 'system', content: this.systemPrompt });
+      }
+      
+      messages.push({ role: 'user', content: prompt });
+
       const response = await this.openmodelsClient.chat({
         model: this.model,
-        messages: [
-          { role: 'user', content: prompt }
-        ],
+        messages: messages,
         max_tokens: this.maxTokens,
         temperature: this.temperature,
         stream: false
@@ -60,11 +70,18 @@ export class OpenModelsLLM extends LLM {
     runManager?: any
   ): Promise<AsyncGenerator<string, void, unknown>> {
     try {
+      // Build messages array with optional system prompt
+      const messages: Array<{ role: string; content: string }> = [];
+      
+      if (this.systemPrompt) {
+        messages.push({ role: 'system', content: this.systemPrompt });
+      }
+      
+      messages.push({ role: 'user', content: prompt });
+
       const stream = await this.openmodelsClient.chat({
         model: this.model,
-        messages: [
-          { role: 'user', content: prompt }
-        ],
+        messages: messages,
         max_tokens: this.maxTokens,
         temperature: this.temperature,
         stream: true
@@ -81,7 +98,8 @@ export class OpenModelsLLM extends LLM {
       model: this.model,
       temperature: this.temperature,
       maxTokens: this.maxTokens,
-      streaming: this.streaming
+      streaming: this.streaming,
+      systemPrompt: this.systemPrompt
     };
   }
 }
