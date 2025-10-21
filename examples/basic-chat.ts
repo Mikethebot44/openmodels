@@ -8,7 +8,7 @@ async function basicChat() {
   const apiKey = process.env.OPENMODELS_API_KEY;
 
   const openmodels = client({
-    baseUrl: 'https://tryscout.dev',
+    baseUrl: 'https://mikethebot44--tryscout-text-create-app.modal.run',
     apiKey: apiKey,
   });
 

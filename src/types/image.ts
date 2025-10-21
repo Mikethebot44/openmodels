@@ -5,6 +5,10 @@ export interface ImageRequest {
   quality?: 'standard' | 'hd';
   n?: number; // number of images to generate
   style?: 'vivid' | 'natural';
+  gpuTier?: "budget" | "pro" | "enterprise";
+  batching_enabled?: boolean;
+  cache_policy?: string;
+  quantization?: "int8" | "int4" | "float16";
 }
 
 export interface ImageResponse {
@@ -14,6 +18,17 @@ export interface ImageResponse {
     b64_json?: string;
     revised_prompt?: string;
   }>;
+  cost_breakdown?: {
+    gpu_seconds: number;
+    gpu_hourly_rate: number;
+    gpu_cost: number;
+    storage_cost: number;
+    bandwidth_cost: number;
+    subtotal: number;
+    margin: number;
+    total_cost: number;
+    estimated: boolean;
+  };
 }
 
 export interface ImageGenerationOptions {

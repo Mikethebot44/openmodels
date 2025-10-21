@@ -12,7 +12,30 @@ npm install openmodels
 
 ### Getting an API Key
 
-First, you need to get an API key by signing up at [tryscout.dev](https://tryscout.dev). You'll receive your API key via email with 1000 free credits ($10 value).
+First, you need to get an API key by signing up at [tryscout.dev](https://tryscout.dev). You'll receive your API key via email with credits based on your plan.
+
+### GPU Tiers & Pricing
+
+OpenModels offers transparent, usage-based pricing with three GPU tiers:
+
+- **Budget** (`gpuTier: 'budget'`): A10G spot instances - $1.10/hour
+- **Pro** (`gpuTier: 'pro'`): H100 shared instances - $2.89/hour  
+- **Enterprise** (`gpuTier: 'enterprise'`): H100 dedicated instances - $4.76/hour
+
+Each request includes a detailed cost breakdown showing:
+- GPU compute time and cost
+- Storage costs
+- Bandwidth costs
+- 50% margin
+- Total cost
+
+### Subscription Plans
+
+- **Budget Plan**: $20/month → $40 credits (2x value)
+- **Pro Plan**: $80/month → $160 credits (2x value)
+- **Enterprise Plan**: $250/month → $500 credits (2x value)
+
+After credits are exhausted, pay per request at transparent rates.
 
 ### Text Generation
 
@@ -33,10 +56,17 @@ try {
       { role: 'user', content: 'Explain quantum computing in simple terms.' }
     ],
     max_tokens: 200,
-    temperature: 0.7
+    temperature: 0.7,
+    gpuTier: 'pro' // Optional: 'budget', 'pro', or 'enterprise'
   });
 
   console.log(response.choices[0].message.content);
+  
+  // View detailed cost breakdown
+  if (response.cost_breakdown) {
+    console.log('Cost breakdown:', response.cost_breakdown);
+    console.log(`Total cost: $${response.cost_breakdown.total_cost.toFixed(4)}`);
+  }
 } catch (error) {
   if (error.message.includes('API key is required')) {
     console.error('Please provide a valid API key');

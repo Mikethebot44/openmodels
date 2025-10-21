@@ -8,6 +8,10 @@ interface ChatCompletionRequest {
     max_tokens?: number;
     temperature?: number;
     stream?: boolean;
+    gpuTier?: "budget" | "pro" | "enterprise";
+    batching_enabled?: boolean;
+    cache_policy?: string;
+    quantization?: "int8" | "int4" | "float16";
 }
 interface ChatCompletionResponse {
     id: string;
@@ -20,6 +24,17 @@ interface ChatCompletionResponse {
     usage: {
         prompt_tokens: number;
         completion_tokens: number;
+    };
+    cost_breakdown?: {
+        gpu_seconds: number;
+        gpu_hourly_rate: number;
+        gpu_cost: number;
+        storage_cost: number;
+        bandwidth_cost: number;
+        subtotal: number;
+        margin: number;
+        total_cost: number;
+        estimated: boolean;
     };
 }
 interface StreamChunk {
@@ -48,6 +63,10 @@ interface EmbeddingRequest {
     model: string;
     input: string | string[];
     encoding_format?: 'float' | 'base64';
+    gpuTier?: "budget" | "pro" | "enterprise";
+    batching_enabled?: boolean;
+    cache_policy?: string;
+    quantization?: "int8" | "int4" | "float16";
 }
 interface EmbeddingResponse {
     object: 'list';
@@ -60,6 +79,17 @@ interface EmbeddingResponse {
     usage: {
         prompt_tokens: number;
         total_tokens: number;
+    };
+    cost_breakdown?: {
+        gpu_seconds: number;
+        gpu_hourly_rate: number;
+        gpu_cost: number;
+        storage_cost: number;
+        bandwidth_cost: number;
+        subtotal: number;
+        margin: number;
+        total_cost: number;
+        estimated: boolean;
     };
 }
 interface EmbeddingUsage {
@@ -74,6 +104,10 @@ interface ImageRequest {
     quality?: 'standard' | 'hd';
     n?: number;
     style?: 'vivid' | 'natural';
+    gpuTier?: "budget" | "pro" | "enterprise";
+    batching_enabled?: boolean;
+    cache_policy?: string;
+    quantization?: "int8" | "int4" | "float16";
 }
 interface ImageResponse {
     created: number;
@@ -82,6 +116,17 @@ interface ImageResponse {
         b64_json?: string;
         revised_prompt?: string;
     }>;
+    cost_breakdown?: {
+        gpu_seconds: number;
+        gpu_hourly_rate: number;
+        gpu_cost: number;
+        storage_cost: number;
+        bandwidth_cost: number;
+        subtotal: number;
+        margin: number;
+        total_cost: number;
+        estimated: boolean;
+    };
 }
 interface ImageGenerationOptions {
     size?: '256x256' | '512x512' | '1024x1024' | '1024x1792' | '1792x1024';
@@ -90,14 +135,131 @@ interface ImageGenerationOptions {
     style?: 'vivid' | 'natural';
 }
 
+interface AudioTranscribeRequest {
+    model: string;
+    input: string;
+    language?: string;
+    prompt?: string;
+    gpuTier?: 'budget' | 'pro' | 'enterprise';
+    batching_enabled?: boolean;
+    cache_policy?: string;
+    quantization?: 'int8' | 'int4' | 'float16';
+}
+interface AudioTranscribeResponse {
+    id: string;
+    object: 'audio.transcription';
+    text: string;
+    segments?: Array<{
+        start: number;
+        end: number;
+        text: string;
+    }>;
+    language?: string;
+    cost_breakdown?: {
+        gpu_seconds: number;
+        gpu_hourly_rate: number;
+        gpu_cost: number;
+        storage_cost: number;
+        bandwidth_cost: number;
+        subtotal: number;
+        margin: number;
+        total_cost: number;
+        estimated: boolean;
+    };
+}
+interface AudioSummarizeRequest {
+    model: string;
+    input: string;
+    prompt?: string;
+    language?: string;
+    gpuTier?: 'budget' | 'pro' | 'enterprise';
+    batching_enabled?: boolean;
+    cache_policy?: string;
+    quantization?: 'int8' | 'int4' | 'float16';
+}
+interface AudioSummarizeResponse {
+    id: string;
+    object: 'audio.summary';
+    text: string;
+    cost_breakdown?: {
+        gpu_seconds: number;
+        gpu_hourly_rate: number;
+        gpu_cost: number;
+        storage_cost: number;
+        bandwidth_cost: number;
+        subtotal: number;
+        margin: number;
+        total_cost: number;
+        estimated: boolean;
+    };
+}
+
+interface ImageClassificationRequest {
+    model: string;
+    input: string;
+    top_k?: number;
+    gpuTier?: 'budget' | 'pro' | 'enterprise';
+    batching_enabled?: boolean;
+    cache_policy?: string;
+    quantization?: 'int8' | 'int4' | 'float16';
+}
+interface ImageClassificationResponse {
+    id: string;
+    object: 'image.classification';
+    classifications: Array<{
+        label: string;
+        score: number;
+    }>;
+    cost_breakdown?: {
+        gpu_seconds: number;
+        gpu_hourly_rate: number;
+        gpu_cost: number;
+        storage_cost: number;
+        bandwidth_cost: number;
+        subtotal: number;
+        margin: number;
+        total_cost: number;
+        estimated: boolean;
+    };
+}
+
+type Task = 'text-generation' | 'image-generation' | 'embedding' | 'audio-transcribe' | 'audio-summarize' | 'image-classification';
+type RunRequest = ({
+    task: 'text-generation';
+    model?: string;
+} & Omit<ChatCompletionRequest, 'model'>) | ({
+    task: 'image-generation';
+    model?: string;
+} & Omit<ImageRequest, 'model'>) | ({
+    task: 'embedding';
+    model?: string;
+} & Omit<EmbeddingRequest, 'model'>) | ({
+    task: 'audio-transcribe';
+    model?: string;
+} & Omit<AudioTranscribeRequest, 'model'>) | ({
+    task: 'audio-summarize';
+    model?: string;
+} & Omit<AudioSummarizeRequest, 'model'>) | ({
+    task: 'image-classification';
+    model?: string;
+} & Omit<ImageClassificationRequest, 'model'>);
+type RunResponse = ChatCompletionResponse | ImageResponse | EmbeddingResponse | AudioTranscribeResponse | AudioSummarizeResponse | ImageClassificationResponse;
+interface RunError {
+    error: string;
+    status?: number;
+}
+
 declare class OpenModels {
     private textProvider;
     private embedProvider;
     private imageProvider;
+    private audioProvider;
+    private visionProvider;
     constructor(config?: OpenModelsConfig);
     chat(request: ChatCompletionRequest): Promise<ChatCompletionResponse | AsyncGenerator<string, void, unknown>>;
     embed(request: EmbeddingRequest): Promise<EmbeddingResponse>;
     image(request: ImageRequest): Promise<ImageResponse>;
+    run(request: RunRequest): Promise<RunResponse | AsyncGenerator<string, void, unknown>>;
 }
 declare function client(config?: OpenModelsConfig): OpenModels;
 
@@ -112,6 +274,9 @@ interface Provider {
     chat(request: any): Promise<any>;
     embed(request: any): Promise<any>;
     image(request: any): Promise<any>;
+    audioTranscribe?(request: AudioTranscribeRequest): Promise<any>;
+    audioSummarize?(request: AudioSummarizeRequest): Promise<any>;
+    visionClassify?(request: ImageClassificationRequest): Promise<any>;
 }
 declare abstract class BaseProvider implements Provider {
     protected config: ProviderConfig;
@@ -119,12 +284,18 @@ declare abstract class BaseProvider implements Provider {
     abstract chat(request: any): Promise<any>;
     abstract embed(request: any): Promise<any>;
     abstract image(request: any): Promise<any>;
+    audioTranscribe?(request: AudioTranscribeRequest): Promise<any>;
+    audioSummarize?(request: AudioSummarizeRequest): Promise<any>;
+    visionClassify?(request: ImageClassificationRequest): Promise<any>;
 }
 
 declare class ModalProvider extends BaseProvider {
     chat(request: ChatCompletionRequest): Promise<any>;
     embed(request: EmbeddingRequest): Promise<any>;
     image(request: ImageRequest): Promise<any>;
+    audioTranscribe(request: AudioTranscribeRequest): Promise<any>;
+    audioSummarize(request: AudioSummarizeRequest): Promise<any>;
+    visionClassify(request: ImageClassificationRequest): Promise<any>;
 }
 
-export { type ChatCompletionRequest, type ChatCompletionResponse, type ChatMessage, type EmbeddingRequest, type EmbeddingResponse, type EmbeddingUsage, type ImageGenerationOptions, type ImageRequest, type ImageResponse, ModalProvider, OpenModels, type OpenModelsConfig, OpenModelsError, type ProviderConfig, type StreamChunk, client, parseSSEStream };
+export { type AudioSummarizeRequest, type AudioSummarizeResponse, type AudioTranscribeRequest, type AudioTranscribeResponse, type ChatCompletionRequest, type ChatCompletionResponse, type ChatMessage, type EmbeddingRequest, type EmbeddingResponse, type EmbeddingUsage, type ImageClassificationRequest, type ImageClassificationResponse, type ImageGenerationOptions, type ImageRequest, type ImageResponse, ModalProvider, OpenModels, type OpenModelsConfig, OpenModelsError, type ProviderConfig, type RunError, type RunRequest, type RunResponse, type StreamChunk, type Task, client, parseSSEStream };
