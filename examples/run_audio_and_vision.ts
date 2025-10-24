@@ -1,7 +1,7 @@
 import { client } from '../src';
 
 async function main() {
-  const openmodels = client({ apiKey: process.env.OM_API_KEY || 'om_test_key', baseUrl: process.env.OM_BASE_URL || 'http://localhost:3000' });
+  const openmodels = client({ apiKey: process.env.OM_API_KEY || 'om_test_key' });
 
   // Audio transcribe
   const transcribe = await openmodels.run({

@@ -18,6 +18,7 @@ import {
   RunResponse
 } from './types';
 import { getDefaultModel } from './registry';
+import { getServiceUrl } from './config/service-urls';
 
 export class OpenModels {
   private textProvider: ModalProvider;
@@ -37,24 +38,7 @@ export class OpenModels {
       throw new OpenModelsError('Invalid API key format. API keys must start with "om_" and be at least 10 characters long.');
     }
 
-    // Determine base URLs for each service
-    const baseUrl = config.baseUrl || 'https://tryscout.dev';
-    
-    // If baseUrl contains modal.run or is a full URL, use as-is
-    // Otherwise, assume it's a base domain and add subfolders
-    const getServiceUrl = (service: string) => {
-      if (baseUrl.includes('modal.run') || baseUrl.includes('/api/')) {
-        // If it's already a full URL or contains subfolder, use as-is
-        return baseUrl;
-      } else if (baseUrl.includes('.')) {
-        // If it's a domain, add subfolder
-        return `${baseUrl}/api/${service}`;
-      } else {
-        // Default to tryscout.dev subfolders
-        return `https://tryscout.dev/api/${service}`;
-      }
-    };
-
+    // Initialize providers with service-specific URLs
     this.textProvider = new ModalProvider({
       apiKey: config.apiKey,
       baseUrl: getServiceUrl('text'),

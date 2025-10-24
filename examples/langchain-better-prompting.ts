@@ -6,7 +6,7 @@ async function langchainBetterExample() {
   // Initialize OpenModels LLM
   const llm = new OpenModelsLLM(
     {
-      baseUrl: 'https://mikethebot44--openmodels-text-inference-create-app.modal.run',
+      apiKey: process.env.OPENMODELS_API_KEY,
     },
     {
       model: 'EleutherAI/gpt-neo-2.7B',

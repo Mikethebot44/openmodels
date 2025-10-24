@@ -42,9 +42,8 @@ After credits are exhausted, pay per request at transparent rates.
 ```typescript
 import { client } from 'openmodels';
 
-// API key is required - will throw error if missing
+// Only API key is required - service URLs are automatically determined
 const openmodels = client({
-  baseUrl: 'https://tryscout.dev', // TryScout hosted service
   apiKey: 'om_your_api_key_here'   // Required!
 });
 
@@ -84,7 +83,6 @@ try {
 import { client } from 'openmodels';
 
 const openmodels = client({
-  baseUrl: 'https://tryscout.dev',
   apiKey: 'om_your_api_key_here' // Required!
 });
 
@@ -107,7 +105,7 @@ for await (const token of stream) {
 import { client } from 'openmodels';
 
 const openmodels = client({
-  baseUrl: 'https://your-embed-modal-app.modal.run',
+  apiKey: 'om_your_api_key_here'
 });
 
 const response = await openmodels.embed({
@@ -143,7 +141,7 @@ import { client } from 'openmodels';
 import * as fs from 'fs';
 
 const openmodels = client({
-  baseUrl: 'https://your-image-modal-app.modal.run',
+  apiKey: 'om_your_api_key_here'
 });
 
 const response = await openmodels.image({
@@ -217,13 +215,13 @@ import { OpenModelsLLM, OpenModelsEmbeddings } from 'openmodels/integrations/lan
 
 // Initialize LLM
 const llm = new OpenModelsLLM(
-  { baseUrl: 'https://your-modal-app.modal.run' },
+  { apiKey: 'om_your_api_key_here' },
   { model: 'microsoft/DialoGPT-medium' }
 );
 
 // Initialize Embeddings
 const embeddings = new OpenModelsEmbeddings(
-  { baseUrl: 'https://your-embed-app.modal.run' },
+  { apiKey: 'om_your_api_key_here' },
   { model: 'sentence-transformers/all-MiniLM-L6-v2' }
 );
 
@@ -241,12 +239,12 @@ from llama_index import VectorStoreIndex, Document
 
 # Initialize components
 llm = OpenModelsLLM(
-    base_url="https://your-modal-app.modal.run",
+    api_key="om_your_api_key_here",
     model="microsoft/DialoGPT-medium"
 )
 
 embeddings = OpenModelsEmbedding(
-    base_url="https://your-embed-app.modal.run",
+    api_key="om_your_api_key_here",
     model="sentence-transformers/all-MiniLM-L6-v2"
 )
 
@@ -263,10 +261,11 @@ The client accepts the following configuration options:
 
 ```typescript
 const openmodels = client({
-  apiKey?: string,     // Optional API key for authentication
-  baseUrl?: string,   // Base URL for the API (default: Modal endpoint)
+  apiKey: string,     // API key for authentication (required)
 });
 ```
+
+**Note:** Service URLs are automatically determined based on the operation type (text, embeddings, image, audio, vision). You don't need to specify base URLs.
 
 ## API Reference
 
@@ -276,10 +275,11 @@ Creates a new OpenModels client instance.
 
 **Parameters:**
 - `config` (optional): Configuration object
-  - `apiKey` (optional): API key for authentication
-  - `baseUrl` (optional): Base URL for the API endpoint
+  - `apiKey` (required): API key for authentication. Must start with "om_" and be at least 10 characters.
 
 **Returns:** `OpenModels` client instance
+
+**Note:** Service endpoints are automatically selected based on the operation type.
 
 ### `chat(request)`
 

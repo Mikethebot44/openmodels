@@ -1,8 +1,12 @@
 import { client } from '../src';
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config({ path: '.env.local' });
 
 async function streamingChat() {
   const openmodels = client({
-    baseUrl: 'https://mikethebot44--openmodels-text-inference-create-app.modal.run',
+    apiKey: process.env.OPENMODELS_API_KEY,
   });
 
   try {
