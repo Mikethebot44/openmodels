@@ -8,6 +8,10 @@ interface ChatCompletionRequest {
     max_tokens?: number;
     temperature?: number;
     stream?: boolean;
+    top_p?: number;
+    stop?: string | string[];
+    presence_penalty?: number;
+    frequency_penalty?: number;
     gpuTier?: "budget" | "pro" | "enterprise";
     batching_enabled?: boolean;
     cache_policy?: string;
@@ -298,4 +302,17 @@ declare class ModalProvider extends BaseProvider {
     visionClassify(request: ImageClassificationRequest): Promise<any>;
 }
 
-export { type AudioSummarizeRequest, type AudioSummarizeResponse, type AudioTranscribeRequest, type AudioTranscribeResponse, type ChatCompletionRequest, type ChatCompletionResponse, type ChatMessage, type EmbeddingRequest, type EmbeddingResponse, type EmbeddingUsage, type ImageClassificationRequest, type ImageClassificationResponse, type ImageGenerationOptions, type ImageRequest, type ImageResponse, ModalProvider, OpenModels, type OpenModelsConfig, OpenModelsError, type ProviderConfig, type RunError, type RunRequest, type RunResponse, type StreamChunk, type Task, client, parseSSEStream };
+interface ModelCapabilities {
+    supportsTopP: boolean;
+    supportsStop: boolean;
+    supportsTemperature: boolean;
+    supportsMaxTokens: boolean;
+    supportsStreaming: boolean;
+    supportsQuantization: boolean;
+    supportedQuantizations?: ('int8' | 'int4' | 'float16')[];
+    maxTokenLimit?: number;
+    notes?: string;
+}
+declare function getModelCapabilities(model: string, type: 'text' | 'image' | 'embed' | 'vision' | 'audio'): ModelCapabilities;
+
+export { type AudioSummarizeRequest, type AudioSummarizeResponse, type AudioTranscribeRequest, type AudioTranscribeResponse, type ChatCompletionRequest, type ChatCompletionResponse, type ChatMessage, type EmbeddingRequest, type EmbeddingResponse, type EmbeddingUsage, type ImageClassificationRequest, type ImageClassificationResponse, type ImageGenerationOptions, type ImageRequest, type ImageResponse, ModalProvider, type ModelCapabilities, OpenModels, type OpenModelsConfig, OpenModelsError, type ProviderConfig, type RunError, type RunRequest, type RunResponse, type StreamChunk, type Task, client, getModelCapabilities, parseSSEStream };

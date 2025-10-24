@@ -9,6 +9,10 @@ export interface ChatCompletionRequest {
   max_tokens?: number;
   temperature?: number;
   stream?: boolean;
+  top_p?: number;
+  stop?: string | string[];
+  presence_penalty?: number;
+  frequency_penalty?: number;
   gpuTier?: "budget" | "pro" | "enterprise";
   batching_enabled?: boolean;
   cache_policy?: string;

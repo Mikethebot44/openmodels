@@ -9,6 +9,7 @@ export const TASK_TO_MODELS: Record<Task, string[]> = {
   'text-generation': [
     'microsoft/DialoGPT-medium',
     'meta-llama/Llama-3.1-8B-Instruct',
+    'meta-llama/Meta-Llama-3-8B-Instruct',
   ],
   'embedding': [
     'sentence-transformers/all-MiniLM-L6-v2',
