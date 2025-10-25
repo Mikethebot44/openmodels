@@ -1,4 +1,4 @@
-import { ModalProvider } from './providers/modal';
+import { HuggingFaceProvider } from './providers/huggingface';
 import { parseSSEStream, OpenModelsError } from './streaming';
 import { 
   OpenModelsConfig, 
@@ -20,11 +20,11 @@ import {
 import { getDefaultModel } from './registry';
 
 export class OpenModels {
-  private textProvider: ModalProvider;
-  private embedProvider: ModalProvider;
-  private imageProvider: ModalProvider;
-  private audioProvider: ModalProvider;
-  private visionProvider: ModalProvider;
+  private textProvider: HuggingFaceProvider;
+  private embedProvider: HuggingFaceProvider;
+  private imageProvider: HuggingFaceProvider;
+  private audioProvider: HuggingFaceProvider;
+  private visionProvider: HuggingFaceProvider;
 
   constructor(config: OpenModelsConfig = {}) {
     // Validate that API key is provided
@@ -37,48 +37,17 @@ export class OpenModels {
       throw new OpenModelsError('Invalid API key format. API keys must start with "om_" and be at least 10 characters long.');
     }
 
-    // Determine base URLs for each service
-    const baseUrl = config.baseUrl || 'https://tryscout.dev';
-    
-    // If baseUrl contains modal.run or is a full URL, use as-is
-    // Otherwise, assume it's a base domain and add subfolders
-    const getServiceUrl = (service: string) => {
-      if (baseUrl.includes('modal.run') || baseUrl.includes('/api/')) {
-        // If it's already a full URL or contains subfolder, use as-is
-        return baseUrl;
-      } else if (baseUrl.includes('.')) {
-        // If it's a domain, add subfolder
-        return `${baseUrl}/api/${service}`;
-      } else {
-        // Default to tryscout.dev subfolders
-        return `https://tryscout.dev/api/${service}`;
-      }
+    // Use HuggingFace Inference Providers
+    const hfConfig = { 
+      apiKey: config.apiKey,
+      hfToken: config.hfToken 
     };
-
-    this.textProvider = new ModalProvider({
-      apiKey: config.apiKey,
-      baseUrl: getServiceUrl('text'),
-    });
-
-    this.embedProvider = new ModalProvider({
-      apiKey: config.apiKey,
-      baseUrl: getServiceUrl('embed'),
-    });
-
-    this.imageProvider = new ModalProvider({
-      apiKey: config.apiKey,
-      baseUrl: getServiceUrl('image'),
-    });
-
-    this.audioProvider = new ModalProvider({
-      apiKey: config.apiKey,
-      baseUrl: getServiceUrl('audio'),
-    });
-
-    this.visionProvider = new ModalProvider({
-      apiKey: config.apiKey,
-      baseUrl: getServiceUrl('vision'),
-    });
+    
+    this.textProvider = new HuggingFaceProvider(hfConfig);
+    this.embedProvider = new HuggingFaceProvider(hfConfig);
+    this.imageProvider = new HuggingFaceProvider(hfConfig);
+    this.audioProvider = new HuggingFaceProvider(hfConfig);
+    this.visionProvider = new HuggingFaceProvider(hfConfig);
   }
 
   async chat(request: ChatCompletionRequest): Promise<ChatCompletionResponse | AsyncGenerator<string, void, unknown>> {

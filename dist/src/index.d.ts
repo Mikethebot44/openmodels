@@ -56,11 +56,7 @@ interface StreamChunk {
 
 interface OpenModelsConfig {
     apiKey?: string;
-    baseUrl?: string;
-}
-interface ProviderConfig {
-    apiKey?: string;
-    baseUrl: string;
+    hfToken?: string;
 }
 
 interface EmbeddingRequest {
@@ -274,34 +270,6 @@ declare class OpenModelsError extends Error {
 }
 declare function parseSSEStream(response: any): AsyncGenerator<string, void, unknown>;
 
-interface Provider {
-    chat(request: any): Promise<any>;
-    embed(request: any): Promise<any>;
-    image(request: any): Promise<any>;
-    audioTranscribe?(request: AudioTranscribeRequest): Promise<any>;
-    audioSummarize?(request: AudioSummarizeRequest): Promise<any>;
-    visionClassify?(request: ImageClassificationRequest): Promise<any>;
-}
-declare abstract class BaseProvider implements Provider {
-    protected config: ProviderConfig;
-    constructor(config: ProviderConfig);
-    abstract chat(request: any): Promise<any>;
-    abstract embed(request: any): Promise<any>;
-    abstract image(request: any): Promise<any>;
-    audioTranscribe?(request: AudioTranscribeRequest): Promise<any>;
-    audioSummarize?(request: AudioSummarizeRequest): Promise<any>;
-    visionClassify?(request: ImageClassificationRequest): Promise<any>;
-}
-
-declare class ModalProvider extends BaseProvider {
-    chat(request: ChatCompletionRequest): Promise<any>;
-    embed(request: EmbeddingRequest): Promise<any>;
-    image(request: ImageRequest): Promise<any>;
-    audioTranscribe(request: AudioTranscribeRequest): Promise<any>;
-    audioSummarize(request: AudioSummarizeRequest): Promise<any>;
-    visionClassify(request: ImageClassificationRequest): Promise<any>;
-}
-
 interface ModelCapabilities {
     supportsTopP: boolean;
     supportsStop: boolean;
@@ -315,4 +283,4 @@ interface ModelCapabilities {
 }
 declare function getModelCapabilities(model: string, type: 'text' | 'image' | 'embed' | 'vision' | 'audio'): ModelCapabilities;
 
-export { type AudioSummarizeRequest, type AudioSummarizeResponse, type AudioTranscribeRequest, type AudioTranscribeResponse, type ChatCompletionRequest, type ChatCompletionResponse, type ChatMessage, type EmbeddingRequest, type EmbeddingResponse, type EmbeddingUsage, type ImageClassificationRequest, type ImageClassificationResponse, type ImageGenerationOptions, type ImageRequest, type ImageResponse, ModalProvider, type ModelCapabilities, OpenModels, type OpenModelsConfig, OpenModelsError, type ProviderConfig, type RunError, type RunRequest, type RunResponse, type StreamChunk, type Task, client, getModelCapabilities, parseSSEStream };
+export { type AudioSummarizeRequest, type AudioSummarizeResponse, type AudioTranscribeRequest, type AudioTranscribeResponse, type ChatCompletionRequest, type ChatCompletionResponse, type ChatMessage, type EmbeddingRequest, type EmbeddingResponse, type EmbeddingUsage, type ImageClassificationRequest, type ImageClassificationResponse, type ImageGenerationOptions, type ImageRequest, type ImageResponse, type ModelCapabilities, OpenModels, type OpenModelsConfig, OpenModelsError, type RunError, type RunRequest, type RunResponse, type StreamChunk, type Task, client, getModelCapabilities, parseSSEStream };
