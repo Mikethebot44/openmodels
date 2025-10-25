@@ -1,10 +1,14 @@
 import { client } from '../src';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config({ path: '.env.local' });
 
 async function textToImage() {
   const openmodels = client({
-    baseUrl: 'https://mikethebot44--openmodels-image-inference-create-app.modal.run',
+    apiKey: process.env.OPENMODELS_API_KEY,
   });
 
   try {

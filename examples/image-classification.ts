@@ -1,5 +1,5 @@
 import { client } from '../src';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 
 // Load environment variables
 dotenv.config({ path: '.env.local' });
@@ -8,7 +8,6 @@ async function imageClassification() {
   const apiKey = process.env.OPENMODELS_API_KEY;
 
   const openmodels = client({
-    baseUrl: 'https://tryscout.dev', // Your Next.js app URL
     apiKey: apiKey,
   });
 

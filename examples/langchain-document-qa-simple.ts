@@ -7,7 +7,7 @@ async function documentQATest() {
   // Initialize OpenModels components
   const llm = new OpenModelsLLM(
     {
-      baseUrl: 'https://mikethebot44--openmodels-text-inference-create-app.modal.run',
+      apiKey: process.env.OPENMODELS_API_KEY,
     },
     {
       model: 'meta-llama/Llama-3-8b',
@@ -18,7 +18,7 @@ async function documentQATest() {
 
   const embeddings = new OpenModelsEmbeddings(
     {
-      baseUrl: 'https://mikethebot44--openmodels-embed-inference-create-app.modal.run',
+      apiKey: process.env.OPENMODELS_API_KEY,
     },
     {
       model: 'sentence-transformers/all-MiniLM-L6-v2'

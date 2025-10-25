@@ -1,8 +1,12 @@
 import { client } from '../src';
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config({ path: '.env.local' });
 
 async function semanticSearch() {
   const openmodels = client({
-    baseUrl: 'https://mikethebot44--openmodels-embed-inference-create-app.modal.run',
+    apiKey: process.env.OPENMODELS_API_KEY,
   });
 
   // Document collection

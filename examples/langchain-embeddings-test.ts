@@ -6,7 +6,7 @@ async function langchainEmbeddingsTest() {
   // Initialize OpenModels Embeddings
   const embeddings = new OpenModelsEmbeddings(
     {
-      baseUrl: 'https://mikethebot44--openmodels-embed-inference-create-app.modal.run',
+      apiKey: process.env.OPENMODELS_API_KEY,
     },
     {
       model: 'sentence-transformers/all-MiniLM-L6-v2',

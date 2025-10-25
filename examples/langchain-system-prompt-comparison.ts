@@ -8,7 +8,7 @@ async function systemPromptComparison() {
   // LLM without system prompt
   const llmWithoutSystem = new OpenModelsLLM(
     {
-      baseUrl: 'https://mikethebot44--openmodels-text-inference-create-app.modal.run',
+      apiKey: process.env.OPENMODELS_API_KEY,
     },
     {
       model: 'EleutherAI/gpt-neo-2.7B',
@@ -21,7 +21,7 @@ async function systemPromptComparison() {
   // LLM with system prompt
   const llmWithSystem = new OpenModelsLLM(
     {
-      baseUrl: 'https://mikethebot44--openmodels-text-inference-create-app.modal.run',
+      apiKey: process.env.OPENMODELS_API_KEY,
     },
     {
       model: 'EleutherAI/gpt-neo-2.7B',
